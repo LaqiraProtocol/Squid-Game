@@ -55,6 +55,8 @@ contract SquidGame is Context, Ownable {
            finished = !finished;
         }
 
+        //Using this function, admin can set the minimum number of special token that participants should
+        //have in their wallets for registration
         function setTokenAmount(uint256 _amount) public onlyOwner {
             requiredAmount = _amount;
         } 
