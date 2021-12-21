@@ -82,6 +82,7 @@ contract SquidGame is Context, Ownable {
             stage4[_participant].prize = _prize;
         }
 
+        //Using the function, winners can claim their prize
         function claimReward() public {
             require(stage4[_msgSender()].prize > 0);
             address payable client = payable(_msgSender());
