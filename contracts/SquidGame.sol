@@ -50,6 +50,7 @@ contract SquidGame is Context, Ownable {
             registrationFee = _fee;
         }
 
+        //This function is used for closing event registration period
         function setFinished() public onlyOwner {
            finished = !finished;
         }
