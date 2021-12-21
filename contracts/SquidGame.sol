@@ -59,20 +59,24 @@ contract SquidGame is Context, Ownable {
         //have in their wallets for registration
         function setTokenAmount(uint256 _amount) public onlyOwner {
             requiredAmount = _amount;
-        } 
+        }
 
+        //Function is called by the owner, when a participant passes stage 1, successfully
         function setStage1Pass(address _participant) public onlyOwner {
             stage1[_participant] = true;
         }
 
+        //Function is called by the owner, when a participant passes stage 2, successfully
         function setStage2Pass(address _participant) public onlyOwner {
             stage2[_participant] = true;
         }
 
+        //Function is called by the owner, when a participant passes stage 3, successfully
         function setStage3Pass(address _participant) public onlyOwner {
             stage3[_participant] = true;
         }
 
+        //Function is called by the owner for a winner participant to set his/her rank and prize
         function setStage4Pass(address _participant, uint256 _rank, uint256 _prize) public onlyOwner {
             stage4[_participant].rank = _rank;
             stage4[_participant].prize = _prize;
