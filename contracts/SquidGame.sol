@@ -34,7 +34,8 @@ contract SquidGame is Context, Ownable {
             _laqiraToken = laqiraToken_;
             _squidToken = squidToken_;
         }
-       
+
+        //Using this function, participants can register into the event by paying registration fee
         function register() public payable notFinished {
             uint256 transferredAmount = msg.value;
             require(laqiraToken().balanceOf(_msgSender()) >= requiredAmount &&
