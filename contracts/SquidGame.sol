@@ -45,6 +45,7 @@ contract SquidGame is Context, Ownable {
             participants[_msgSender()] = true;
         }
 
+        //Using the function, event admin can set an entrance fee for participants
         function setFee(uint256 _fee) public onlyOwner {
             registrationFee = _fee;
         }
