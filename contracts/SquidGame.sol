@@ -154,10 +154,6 @@ contract SquidGame is Context, Ownable {
             return requiredAmount;
         }
 
-        function getParticipantCurrentStage(address _participant) public view returns (bool[] memory currentStage) {
-
-        }
-
         modifier notFinished() {
             require(!finished, 'Registration period has ended');
            _;
