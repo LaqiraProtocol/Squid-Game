@@ -182,7 +182,7 @@ contract SquidGame is Context, Ownable {
             } else if (_stage == 2) {
                 _status = stage2[_user];
             } else if (_stage == 3) {
-                _status = stage2[_user];
+                _status = stage3[_user];
             }
         }
 }
