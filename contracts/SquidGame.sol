@@ -70,26 +70,32 @@ contract SquidGame is Context, Ownable {
         }
 
         //Function is called by the owner, when a participant passes stage 1, successfully
-        function setStage1Pass(address _participant) public onlyOwner {
-            require(isParticipant(_participant), 'Given address has not registered');
+        function setStage1Pass(address _participant, bool isChecked) public onlyOwner {
+            if (!isChecked)
+                require(checkStage(_participant, 1), 'Given address has not registered');
+            
             stage1[_participant] = true;
         }
 
         //Function is called by the owner, when a participant passes stage 2, successfully
-        function setStage2Pass(address _participant) public onlyOwner {
-            require(stage1[_participant], 'Stage1: Wrong participant');
+        function setStage2Pass(address _participant, bool isChecked) public onlyOwner {
+            if (!isChecked)
+                require(checkStage(_participant, 1), 'Stage1: Wrong participant');
+            
             stage2[_participant] = true;
         }
 
         //Function is called by the owner, when a participant passes stage 3, successfully
-        function setStage3Pass(address _participant) public onlyOwner {
-            require(stage2[_participant], 'Stage2: Wrong participant');
+        function setStage3Pass(address _participant, bool isChecked) public onlyOwner {
+            if (!isChecked)
+                require(checkStage(_participant, 2), 'Stage2: Wrong participant');
+            
             stage3[_participant] = true;
         }
 
         //Function is called by the owner for a winner participant to set his/her rank and prize
         function setStage4Pass(address _participant, uint8 _rank, uint256 _prize) public onlyOwner {
-            require(stage3[_participant], 'Stage3: Wrong participant');
+            require(checkStage(_participant, 3), 'Stage3: Wrong participant');
 
             stage4[_participant].rank = _rank;
             stage4[_participant].prize = _prize;
@@ -98,14 +104,25 @@ contract SquidGame is Context, Ownable {
         function batchSetStage(address[] memory _participants, string memory _stageName) public onlyOwner {
             uint256 i;
             if (keccak256(bytes(_stageName)) == keccak256('setStage1Pass')) {
-                for (i = 0; i < _participants.length; i++) 
-                    setStage1Pass(_participants[i]);
+                for (i = 0; i < _participants.length; i++) { 
+                    if (checkStage(_participants[i], 1))
+                        setStage1Pass(_participants[i], true);
+                    else
+                        continue;
+                }
             } else if (keccak256(bytes(_stageName)) == keccak256('setStage2Pass')) {
-                for (i = 0; i < _participants.length; i++)
-                    setStage2Pass(_participants[i]);
+                for (i = 0; i < _participants.length; i++) {
+                    if (checkStage(_participants[i], 2))
+                        setStage2Pass(_participants[i], true);
+                    else 
+                        continue;
+                }
             } else if (keccak256(bytes(_stageName)) == keccak256('setStage3Pass')) {
                 for (i = 0; i < _participants.length; i++) 
-                    setStage3Pass(_participants[i]);
+                    if (checkStage(_participants[i], 3))
+                        setStage3Pass(_participants[i], true);
+                    else 
+                        continue;
             } else {
                 revert('Wrong stage name');
             }
@@ -157,5 +174,15 @@ contract SquidGame is Context, Ownable {
         modifier notFinished() {
             require(!finished, 'Registration period has ended');
            _;
+        }
+
+        function checkStage(address _user, uint8 _stage) public view returns (bool _status) {
+            if (_stage == 1) {
+                _status = isParticipant(_user);
+            } else if (_stage == 2) {
+                _status = stage2[_user];
+            } else if (_stage == 3) {
+                _status = stage2[_user];
+            }
         }
 }
