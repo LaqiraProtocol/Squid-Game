@@ -11,6 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "@openzeppelin/contracts": "^4.4.1",
-    "chai": "^4.3.4"
+    "@openzeppelin/test-helpers": "^0.5.15",
+    "@truffle/hdwallet-provider": "^2.0.0",
+    "chai": "^4.3.4",
+    "dotenv": "^10.0.0"
   }
 }
