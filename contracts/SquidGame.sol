@@ -69,45 +69,40 @@ contract SquidGame is Context, Ownable {
             requiredAmount = _amount;
         }
 
-        //Function is called by the owner, when a participant passes stage 1, successfully
-        function setStage1Pass(address _participant) public onlyOwner {
-            require(isParticipant(_participant), 'Given address has not registered');
-            stage1[_participant] = true;
-        }
-
-        //Function is called by the owner, when a participant passes stage 2, successfully
-        function setStage2Pass(address _participant) public onlyOwner {
-            require(stage1[_participant], 'Stage1: Wrong participant');
-            stage2[_participant] = true;
-        }
-
-        //Function is called by the owner, when a participant passes stage 3, successfully
-        function setStage3Pass(address _participant) public onlyOwner {
-            require(stage2[_participant], 'Stage2: Wrong participant');
-            stage3[_participant] = true;
-        }
-
-        //Function is called by the owner for a winner participant to set his/her rank and prize
-        function setStage4Pass(address _participant, uint8 _rank, uint256 _prize) public onlyOwner {
-            require(stage3[_participant], 'Stage3: Wrong participant');
-
-            stage4[_participant].rank = _rank;
-            stage4[_participant].prize = _prize;
-        }
-
-        function batchSetStage(address[] memory _participants, string memory _stageName) public onlyOwner {
+        function batchSetStage(address[] memory _participants, uint8 _stageNumber) public onlyOwner {
             uint256 i;
-            if (keccak256(bytes(_stageName)) == keccak256('setStage1Pass')) {
-                for (i = 0; i < _participants.length; i++) 
-                    setStage1Pass(_participants[i]);
-            } else if (keccak256(bytes(_stageName)) == keccak256('setStage2Pass')) {
-                for (i = 0; i < _participants.length; i++)
-                    setStage2Pass(_participants[i]);
-            } else if (keccak256(bytes(_stageName)) == keccak256('setStage3Pass')) {
-                for (i = 0; i < _participants.length; i++) 
-                    setStage3Pass(_participants[i]);
-            } else {
-                revert('Wrong stage name');
+            uint256 arrayLen = _participants.length;
+            if (_stageNumber == 1) {
+                for (i = 0; i < arrayLen; i++) { 
+                    if (isParticipant(_participants[i]))
+                        setStage1Pass(_participants[i]);
+                    else
+                        continue;
+                }
+            } else if (_stageNumber == 2) {
+                for (i = 0; i < arrayLen; i++) {
+                    if (isAtStage1(_participants[i]))
+                        setStage2Pass(_participants[i]);
+                    else 
+                        continue;
+                }
+            } else if (_stageNumber == 3) {
+                for (i = 0; i < arrayLen; i++) 
+                    if (isAtStage2(_participants[i]))
+                        setStage3Pass(_participants[i]);
+                    else 
+                        continue;
+            }
+        }
+
+        function batchSetStage4(address[] memory _participants, uint8[] memory _rank, uint256[] memory _prize) public onlyOwner {
+            require(_participants.length == _rank.length && _rank.length == _prize.length, 'Wrong len');
+            for (uint256 i = 0; i < _participants.length; i++) {
+                if (isAtStage3(_participants[i])) {
+                    setStage4Pass(_participants[i], _rank[i], _prize[i]);
+                } else {
+                    continue;
+                }
             }
         }
 
@@ -157,5 +152,38 @@ contract SquidGame is Context, Ownable {
         modifier notFinished() {
             require(!finished, 'Registration period has ended');
            _;
+        }
+
+        function isAtStage1(address _participant) public view returns (bool) {
+            return stage1[_participant];
+        }
+
+        function isAtStage2(address _participant) public view returns (bool) {
+            return stage2[_participant];
+        }
+
+        function isAtStage3(address _participant) public view returns (bool) {
+            return stage3[_participant];
+        }
+
+         //Function is called by the owner, when a participant passes stage 1, successfully
+        function setStage1Pass(address _participant) internal {
+            stage1[_participant] = true;
+        }
+
+        //Function is called by the owner, when a participant passes stage 2, successfully
+        function setStage2Pass(address _participant) internal {
+            stage2[_participant] = true;
+        }
+
+        //Function is called by the owner, when a participant passes stage 3, successfully
+        function setStage3Pass(address _participant) internal {
+            stage3[_participant] = true;
+        }
+
+        //Function is called by the owner for a winner participant to set his/her rank and prize
+        function setStage4Pass(address _participant, uint8 _rank, uint256 _prize) internal {
+            stage4[_participant].rank = _rank;
+            stage4[_participant].prize = _prize;
         }
 }
