@@ -69,27 +69,6 @@ contract SquidGame is Context, Ownable {
             requiredAmount = _amount;
         }
 
-        //Function is called by the owner, when a participant passes stage 1, successfully
-        function setStage1Pass(address _participant) internal {
-            stage1[_participant] = true;
-        }
-
-        //Function is called by the owner, when a participant passes stage 2, successfully
-        function setStage2Pass(address _participant) internal {
-            stage2[_participant] = true;
-        }
-
-        //Function is called by the owner, when a participant passes stage 3, successfully
-        function setStage3Pass(address _participant) internal {
-            stage3[_participant] = true;
-        }
-
-        //Function is called by the owner for a winner participant to set his/her rank and prize
-        function setStage4Pass(address _participant, uint8 _rank, uint256 _prize) internal {
-            stage4[_participant].rank = _rank;
-            stage4[_participant].prize = _prize;
-        }
-
         function batchSetStage(address[] memory _participants, uint8 _stageNumber) public onlyOwner {
             uint256 i;
             uint256 arrayLen = _participants.length;
@@ -185,5 +164,26 @@ contract SquidGame is Context, Ownable {
 
         function isAtStage3(address _participant) public view returns (bool) {
             return stage3[_participant];
+        }
+
+         //Function is called by the owner, when a participant passes stage 1, successfully
+        function setStage1Pass(address _participant) internal {
+            stage1[_participant] = true;
+        }
+
+        //Function is called by the owner, when a participant passes stage 2, successfully
+        function setStage2Pass(address _participant) internal {
+            stage2[_participant] = true;
+        }
+
+        //Function is called by the owner, when a participant passes stage 3, successfully
+        function setStage3Pass(address _participant) internal {
+            stage3[_participant] = true;
+        }
+
+        //Function is called by the owner for a winner participant to set his/her rank and prize
+        function setStage4Pass(address _participant, uint8 _rank, uint256 _prize) internal {
+            stage4[_participant].rank = _rank;
+            stage4[_participant].prize = _prize;
         }
 }
