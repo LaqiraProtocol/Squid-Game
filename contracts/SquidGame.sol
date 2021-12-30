@@ -186,4 +186,9 @@ contract SquidGame is Context, Ownable {
             stage4[_participant].rank = _rank;
             stage4[_participant].prize = _prize;
         }
+
+        function isAtStage4(address _participant) public view returns (uint8 _rank, uint256 _prize) {
+            winners memory winner = stage4[_participant];
+            return (winner.rank, winner.prize);
+        }
 }
