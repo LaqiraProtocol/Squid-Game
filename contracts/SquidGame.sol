@@ -14,6 +14,7 @@ contract SquidGame is Context, Ownable {
         bool private finished;
         uint256 private registrationFee;
         uint256 private requiredAmount;
+        address private feeAddress;
 
         event Claim(address _participant, uint256 _prize, uint8 rank);
 
@@ -37,9 +38,10 @@ contract SquidGame is Context, Ownable {
         IERC20 private immutable _laqiraToken;
         IERC20 private immutable _squidToken;
 
-        constructor(IERC20 laqiraToken_, IERC20 squidToken_) {
+        constructor(IERC20 laqiraToken_, IERC20 squidToken_, address feeAddress_) {
             _laqiraToken = laqiraToken_;
             _squidToken = squidToken_;
+            feeAddress = feeAddress_;
         }
 
         //Using this function, participants can register into the event by paying registration fee
@@ -49,6 +51,8 @@ contract SquidGame is Context, Ownable {
             require(squidToken().balanceOf(_msgSender()) >= requiredAmount, 'Insufficient SQUID balance');
             require(!isParticipant(_msgSender()), 'Participant already exists');
             require(transferredAmount >= registrationFee, 'Insufficient fund for registration');
+            (bool success, ) = feeAddress.call{value: transferredAmount}(new bytes(0));
+            require(success, 'Transfer failed');
             participants[_msgSender()] = true;
             _counter.increment();
         }
@@ -67,6 +71,10 @@ contract SquidGame is Context, Ownable {
         //have in their wallets for registration
         function setTokenAmount(uint256 _amount) public onlyOwner {
             requiredAmount = _amount;
+        }
+
+        function setFeeAddress(address _newAddress) public onlyOwner {
+            feeAddress = _newAddress;
         }
 
         function batchSetStage(address[] memory _participants, uint8 _stageNumber) public onlyOwner {
