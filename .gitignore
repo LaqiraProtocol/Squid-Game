@@ -1,6 +1,6 @@
 node_modules
 build
-contracts/artifacts
+contracts/**/artifacts
 scripts
 .secret
 .env
