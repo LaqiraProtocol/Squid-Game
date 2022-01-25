@@ -145,7 +145,7 @@ contract SquidGame is Context, Ownable {
             return _squidToken;
         }
 
-        function getRegisterdParticipants() public view returns (uint256) {
+        function getRegisteredParticipants() public view returns (uint256) {
             return _counter.current();            
         }
 
