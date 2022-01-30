@@ -114,7 +114,7 @@ contract SquidGame is Context, Ownable {
             }
         }
 
-        function Wlotteryinner(address _winner, uint256 _prize) public onlyOwner {
+        function lotteryWinner(address _winner, uint256 _prize) public onlyOwner {
             require(isParticipant(_winner));
             stage4[_winner].prize = _prize;
             stage4[_winner].rank = 0;
