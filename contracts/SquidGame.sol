@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: MIT
+// Squid Game Governor Smart Contract, Developed by Laqira Protocol Team
+
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
